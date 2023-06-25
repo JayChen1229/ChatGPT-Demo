@@ -29,6 +29,12 @@
         width: 90vw;
       }
     }
+
+
+    #output {
+      border: none;
+
+    }
   </style>
 </head>
 
@@ -73,6 +79,33 @@
       $("#your-element-id").css("filter", "none");
       $("#your-element-id").css("opacity", "1");
     });
+
+    // 歡迎光臨
+    let user = JSON.parse(sessionStorage.getItem("user"));
+    let message = `Welcome, ${user.username}! Please enter your text to start asking questions.`;
+
+    let index = 0;
+
+    function displayCharacters() {
+      if (index < message.length) {
+        let substring = message.substring(0, index + 1);
+        document.getElementById("output").innerHTML = substring;
+        index++;
+        setTimeout(displayCharacters, 100); // 0.2秒後再次呼叫函數
+      }
+    }
+
+    displayCharacters();
+  });
+
+  $("#content").on("keypress", function (event) {
+    if (event.which === 13) { // Enter 键的键码是 13
+      event.preventDefault(); // 阻止默认的 Enter 键行为，如提交表单
+      // 在这里执行你想要的操作
+      console.log("Enter 键被按下");
+      // 可以调用你的函数或执行其他操作
+      $(".btn").click();
+    }
   });
 
   $(".btn").on("click", function (e) {

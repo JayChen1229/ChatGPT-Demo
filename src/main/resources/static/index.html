@@ -84,8 +84,15 @@
       data: JSON.stringify(user),
       contentType: "application/json",
       success: function (response) {
-        if (response !== -1) {
-          sessionStorage.setItem("userId", response)
+        if (response) {
+          let user = {
+            id: response.id,
+            username: response.username,
+            email: response.email,
+            password: response.password
+          }
+          let userString = JSON.stringify(user);
+          sessionStorage.setItem("user", userString);
           window.location.href = "form.html";
 
         } else {

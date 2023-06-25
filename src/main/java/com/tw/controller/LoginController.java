@@ -20,12 +20,12 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public int login(@RequestBody User user){
+    public User login(@RequestBody User user){
         User theUser = userService.findUser(user);
         if(theUser != null){
-            return theUser.getId();
+            return theUser;
         }
-        return -1;
+        return null;
     }
 
     @PostMapping("/register")

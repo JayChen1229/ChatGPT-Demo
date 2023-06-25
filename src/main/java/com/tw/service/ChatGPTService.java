@@ -22,7 +22,7 @@ public class ChatGPTService {
     private static final String URL = "https://api.openai.com/v1/chat/completions"; // ChatGPT API 的 URL
 
     @Value("${API_KEY}")
-    private static String API_KEY; // 你的 API 密鑰
+    private String API_KEY; // 你的 API 密鑰
 
     // 設定 Service 基本參數
     private String output;
