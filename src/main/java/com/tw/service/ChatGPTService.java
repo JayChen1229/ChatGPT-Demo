@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
@@ -19,7 +20,9 @@ public class ChatGPTService {
     private static final String MODEL = "gpt-3.5-turbo"; // 設定模型名稱
     private static final int MAX_TOKENS = 2500; // 設定每次請求的字數上限 (一個中文字2Token, 一個英文字1Token)
     private static final String URL = "https://api.openai.com/v1/chat/completions"; // ChatGPT API 的 URL
-    private static final String API_KEY = "your API key"; // 你的 API 密鑰
+
+    @Value("${API_KEY}")
+    private static String API_KEY; // 你的 API 密鑰
 
     // 設定 Service 基本參數
     private String output;
