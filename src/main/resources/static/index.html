@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+
+
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+
+<body>
+  <div id="your-element-id" class="background-image">
+    <div class="login-box">
+      <h2 id="title">Login</h2>
+      <form>
+        <div class="user-box username">
+          <input type="text" name="username" required="" id="username">
+          <label>Username</label>
+        </div>
+        <div class="user-box email">
+          <input type="text" name="email" required="" id="email">
+          <label>Email</label>
+        </div>
+        <div class="user-box">
+          <input type="password" name="password" required="" id="password">
+          <label>Password</label>
+        </div>
+        <a href="#" class="btn">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          Submit
+        </a>
+      </form>
+    </div>
+  </div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  //  防止圖片閃爍
+  $(document).ready(function () {
+    var backgroundImage = new Image();
+    backgroundImage.src = "./img/backgroundimg.jpg";
+
+    $(backgroundImage).on("load", function () {
+      $("#your-element-id").css("filter", "none");
+      $("#your-element-id").css("opacity", "1");
+    });
+  });
+
+
+
+
+
+
+  $(".btn").on("click", function (e) {
+    e.preventDefault();
+    // 如果為登入畫面
+
+    if ($('#title').text() == "Login") {
+      login();
+    }
+
+    if ($('#title').text() == "Register") {
+      register();
+    }
+  });
+
+
+  login = function () {
+    let user = {
+      email: $("#email").val(),
+      password: $("#password").val()
+    }
+
+    $.ajax({
+      url: "/login",
+      method: "POST",
+      data: JSON.stringify(user),
+      contentType: "application/json",
+      success: function (response) {
+        if (response !== -1) {
+          sessionStorage.setItem("userId", response)
+          window.location.href = "form.html";
+
+        } else {
+          $('#title').fadeOut(500, function () {
+            Swal.fire({
+              position: 'top',
+              title: 'Login failed',
+              timer: 1500,
+              showConfirmButton: false,
+              background: 'rgba(255, 255, 255, .7)'
+            });
+
+            $(this).text('Register').fadeIn(500);
+            $(".username").fadeIn(1000);
+          });
+        }
+      }
+    })
+  }
+
+  register = function () {
+    let user = {
+      username: $("#username").val(),
+      email: $("#email").val(),
+      password: $("#password").val()
+    }
+    $.ajax({
+      url: "/register",
+      method: "POST",
+      data: JSON.stringify(user),
+      contentType: "application/json",
+      success: function (response) {
+        if (response) {
+          Swal.fire({
+            position: 'top',
+            title: 'Registration success',
+            timer: 1500,
+            showConfirmButton: false,
+            background: 'rgba(255, 255, 255, .7)'
+          });
+
+
+
+
+          $('#title').fadeOut(500, function () {
+            $(this).text('Login').fadeIn(500);
+            $(".username").fadeOut(400);
+          });
+        } else {
+          Swal.fire({
+            position: 'top',
+            title: 'This mailbox is already registered',
+            timer: 1500,
+            showConfirmButton: false,
+            background: 'rgba(255, 255, 255, .7)'
+          });
+        }
+      }
+    })
+  }
+
+</script>
+
+</html>

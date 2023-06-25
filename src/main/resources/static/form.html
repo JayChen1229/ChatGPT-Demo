@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+
+
+  <link rel="stylesheet" href="./style.css">
+
+  <style>
+    textarea {
+      font-size: 16px;
+      color: #fff;
+      background: rgba(0, 0, 0, .1);
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 100%;
+      height: 30vh;
+      resize: none;
+    }
+
+    .login-box {
+      width: 50vw;
+    }
+
+    @media screen and (max-width: 800px) {
+      .login-box {
+        width: 90vw;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="your-element-id" class="background-image">
+    <div class="login-box">
+      <h2 id="title">Chat Room</h2>
+      <form>
+
+
+        <textarea name="myText" id="output"></textarea>
+
+        <br><br><br><br>
+        <div class="user-box">
+          <input type="text" name="text" required="" id="content">
+          <label>Send a message</label>
+        </div>
+
+
+
+        <a href="#" class="btn">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          Submit
+        </a>
+      </form>
+    </div>
+  </div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  //  防止圖片閃爍
+  $(document).ready(function () {
+    var backgroundImage = new Image();
+    backgroundImage.src = "./img/backgroundimg.jpg";
+
+    $(backgroundImage).on("load", function () {
+      $("#your-element-id").css("filter", "none");
+      $("#your-element-id").css("opacity", "1");
+    });
+  });
+
+  $(".btn").on("click", function (e) {
+    e.preventDefault();
+    document.getElementById("output").innerHTML = "";
+    message();
+
+  });
+
+
+  message = function () {
+    let content = $("#content").val();
+    console.log(content);
+
+    $.ajax({
+      url: "/content",
+      method: "POST",
+      data: { content: content },
+      success: function (response) {
+        $("#content").val("");
+        console.log(response);
+      }
+    })
+  }
+
+
+  const sseSource = new EventSource(`/sse`);
+  sseSource.addEventListener("message", function (event) {
+    console.log(event);
+
+    if (event.data !== null) {
+      let processedData = event.data.replace(/\\n/g, '\n');
+      processedData = processedData.replace("\\s", " ");
+      // let value = event.data.replace(/\\n/g, "\n");
+      document.getElementById("output").innerHTML += processedData;
+      // console.log(value)
+    }
+  });
+
+
+</script>
+
+</html>
