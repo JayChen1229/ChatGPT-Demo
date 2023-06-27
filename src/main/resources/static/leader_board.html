@@ -40,17 +40,14 @@
         </div>
         <!-- animated -->
         <div class="login-box tableContainer">
-            <h2 id="title">Manage</h2>
+            <h2 id="title">Leader Board</h2>
             <form>
                 <textarea name="myText" id="output" readonly></textarea>
                 <table class="table" style="color: white;">
                     <thead>
                         <tr>
-                            <th scope="col">Id</th>
+                            <th scope="col">Ranking</th>
                             <th scope="col">User Name</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Password</th>
-                            <th scope="col">Login Frequency</th>
                             <th scope="col">LV</th>
                             <th scope="col">Money</th>
                             <th scope="col">MaxScore</th>
@@ -84,13 +81,6 @@
                     <span></span>
                     Delete this User
                 </a>
-                <a href="#" class="btn delete_btn" onclick="update()">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    Update this User
-                </a>
             </form>
         </div>
     </div>
@@ -119,7 +109,7 @@
         });
 
         // 歡迎光臨
-        let message = `Welcome to the management system, here you can check all  information`;
+        let message = `Welcome to the leader board`;
 
         let index = 0;
 
@@ -140,23 +130,22 @@
         e.preventDefault();
         $("#output").hide();
         $.ajax({
-            url: "/users",
+            url: "/rank/users",
             method: "GET",
             success: function (response) {
                 $("#content").val("");
                 $(".tbody").empty();
                 console.log(response);
+                let id = 1;
                 for (let user of response) {
                     $(".tbody").append(` <tr>
-                            <td>${user.id}</td>
+                            <td>${id}</td>
                             <td>${user.username}</td>
-                            <td>${user.email}</td>
-                            <td>${user.password}</td>
-                            <td>${user.frequency}</td>
                             <td>${user.level}</td>
                             <td>${user.money}</td>
                             <td>${user.maxScore}</td>
                         </tr>`);
+                    id++
 
                 }
             }

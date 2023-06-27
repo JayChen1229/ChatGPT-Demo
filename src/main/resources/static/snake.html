@@ -29,10 +29,55 @@
             resize: none;
             border: none;
         }
+
+
+
+        /*分数数字：文字加粗，下划线*/
+        #score {
+            color: lightblue;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        /*游戏面板：居中、父元素设置成相对点*/
+        #board {
+            height: 500px;
+            width: 1000px;
+            background-color: rgba(0, 0, 0, .1);
+            border: 2px solid white;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /*豆子：显示为区块、圆角、z轴、绝对定位*/
+        #board span {
+            width: 20px;
+            height: 20px;
+            background-color: yellow;
+            display: block;
+            border-radius: 50%;
+            z-index: 0;
+            position: absolute;
+        }
+
+        /*蛇：圆角、绝对定位、z轴*/
+        #board div {
+            width: 20px;
+            height: 20px;
+            background-color: skyblue;
+            border-radius: 50%;
+            position: absolute;
+            z-index: 1;
+        }
+
+        .start_btn {
+            margin-top: 1px !important;
+        }
     </style>
 </head>
 
 <body>
+
     <div id="your-element-id" class="background-image">
         <!-- animated -->
         <div id="large-header">
@@ -40,54 +85,46 @@
         </div>
         <!-- animated -->
         <div class="login-box tableContainer">
-            <h2 id="title">Member Detail</h2>
+            <h2 id="title">Snake game</h2>
+
             <form>
+
+                <!-- 遊戲介紹 -->
                 <textarea name="myText" id="output" readonly></textarea>
-
-
-
-                <br><br><br><br>
-                <div class="user-box">
-                    <input type="text" name="text" required="" id="content">
-                    <label>Send a message</label>
-                </div>
-
-
-
-                <a href="chat_room.html" class="btn">
+                <!-- 遊戲區域 -->
+                <article id="head_right">Your score：<span id="score">0</span> </article>
+                <section id="board"></section>
+                <a href="#" class="btn start_btn" onclick="start()">
                     <span></span>
                     <span></span>
                     <span></span>
                     <span></span>
-                    ChatGPT Chat Room
+                    Start
                 </a>
-                <a href="leader_board.html" class="btn">
+                <a href=" #" class="btn start_btn" onclick="pause();">
                     <span></span>
                     <span></span>
                     <span></span>
                     <span></span>
-                    leaderboard
+                    pause
                 </a>
-                <a href="venue.html" class="btn">
+                <a href="#" class="btn start_btn" onclick="reset();">
                     <span></span>
                     <span></span>
                     <span></span>
                     <span></span>
-                    Venue
+                    reset
                 </a>
-                <a href="snake.html" class="btn">
+                <br>
+                <br>
+                <br>
+
+                <a href="member_center.html" class="btn">
                     <span></span>
                     <span></span>
                     <span></span>
                     <span></span>
-                    Snake
-                </a>
-                <a href="#" class="btn upgrade_btn">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    Upgrade
+                    Member Center
                 </a>
             </form>
         </div>
@@ -105,6 +142,7 @@
 <!-- ============================================== animated ============================================== -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
 <script src="./js/animated.js"></script>
+<script src="./js/snake.js"></script>
 <script>
     //  防止圖片閃爍
     $(document).ready(function () {
@@ -117,12 +155,10 @@
         });
 
         // 歡迎光臨
-        // 歡迎光臨
         let user = JSON.parse(sessionStorage.getItem("user"));
-        let message = `Welcome, ${user.username}! 
-LV:${user.level}
-$:${user.money}
-Max_score:${user.maxScore}`;
+        let message = `Snake game is a simple and addictive game where you control a pixelated snake, eat dots, and grow longer. Avoid obstacles and yourself to achieve a high score. Enjoy the nostalgic charm of classic gaming in this timeless experience.
+entry fee: 10$        
+`;
         let index = 0;
 
         function displayCharacters() {
@@ -133,53 +169,14 @@ Max_score:${user.maxScore}`;
                 setTimeout(displayCharacters, 10); // 0.2秒後再次呼叫函數
             }
         }
-
         displayCharacters();
 
+        // $(".start_btn").on("click", function () {
+        //     $("#output").hide();
+        //     const boardElement = document.getElementById("board");
+        //     boardElement.scrollIntoView({ behavior: "smooth", block: "center" });
 
-        $(".upgrade_btn").on("click", function (e) {
-            e.preventDefault();
-
-            if (user.money > 100) {
-                user.level = user.level + 1;
-                user.money = user.money - 100;
-
-                let userString = JSON.stringify(user);
-                sessionStorage.setItem("user", userString);  // 將使用者資訊存入sessionStorage
-
-                message = `Welcome, ${user.username}! 
-LV:${user.level}
-$:${user.money}`;
-                index = 0;
-                displayCharacters();
-
-                $.ajax({
-                    url: "/users",
-                    method: "PUT",
-                    data: JSON.stringify(user),
-                    contentType: "application/json",
-                    success: function (response) {
-                        if (response) {
-                            Swal.fire({
-                                position: 'top',
-                                title: 'Upgrade success',
-                                timer: 1500,
-                                showConfirmButton: false,
-                                background: 'rgba(255, 255, 255, .7)'
-                            });
-                        }
-                    }
-                })
-            } else {
-                Swal.fire({
-                    position: 'top',
-                    title: 'Upgrade fail',
-                    timer: 1500,
-                    showConfirmButton: false,
-                    background: 'rgba(255, 255, 255, .7)'
-                });
-            }
-        });
+        // })
     });
 
 

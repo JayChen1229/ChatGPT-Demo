@@ -1,15 +1,20 @@
 package com.tw.model;
 
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+
+import java.io.Serializable;
 
 @Entity
 @Getter
 @Setter
-public class User {
+@ToString
+public class User implements Serializable {
     @Id
     int id;
     String username;
@@ -18,4 +23,6 @@ public class User {
     int frequency;
     int level;
     int money;
+    @Column(name = "max_score")
+    int maxScore;
 }

@@ -11,7 +11,6 @@
 </head>
 
 <body>
-
   <div id="your-element-id" class="background-image">
     <!-- animated -->
     <div id="large-header">
@@ -117,6 +116,7 @@
             frequency: response.frequency,
             level: response.level,
             money: response.money,
+            maxScore: response.maxScore,
           }
           let userString = JSON.stringify(user);
           sessionStorage.setItem("user", userString);  // 將使用者資訊存入sessionStorage
