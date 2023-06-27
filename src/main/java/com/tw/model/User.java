@@ -15,4 +15,7 @@ public class User {
     String username;
     String email;
     String password;
+    int frequency;
+    int level;
+    int money;
 }

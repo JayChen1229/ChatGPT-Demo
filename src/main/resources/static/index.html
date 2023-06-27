@@ -11,7 +11,13 @@
 </head>
 
 <body>
+
   <div id="your-element-id" class="background-image">
+    <!-- animated -->
+    <div id="large-header">
+      <canvas id="demo-canvas"></canvas>
+    </div>
+    <!-- animated -->
     <div class="login-box">
       <h2 id="title">Login</h2>
       <form>
@@ -38,9 +44,15 @@
     </div>
   </div>
 </body>
-
+<!-- ============================================== jquery ============================================== -->
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+<!-- ============================================== sweetAlert ============================================== -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- ============================================== animated ============================================== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+<script src="./js/animated.js"></script>
 <script>
   //  防止圖片閃爍
   $(document).ready(function () {
@@ -51,6 +63,15 @@
       $("#your-element-id").css("filter", "none");
       $("#your-element-id").css("opacity", "1");
     });
+  });
+
+
+  // 監聽enter
+  $("#password").on("keypress", function (event) {
+    if (event.which === 13) { // Enter 键的键码是 13
+      event.preventDefault(); // 阻止默认的 Enter 键行为，如提交表单
+      $(".btn").click();
+    }
   });
 
 
@@ -84,18 +105,24 @@
       data: JSON.stringify(user),
       contentType: "application/json",
       success: function (response) {
-        if (response) {
+        // 判斷是否為管理員
+        if (response.email === "?" && response.password === "!") {
+          window.location.href = "manage.html";
+        } else if (response) {    // 判斷使用者是否存在
           let user = {
             id: response.id,
             username: response.username,
             email: response.email,
-            password: response.password
+            password: response.password,
+            frequency: response.frequency,
+            level: response.level,
+            money: response.money,
           }
           let userString = JSON.stringify(user);
-          sessionStorage.setItem("user", userString);
-          window.location.href = "form.html";
+          sessionStorage.setItem("user", userString);  // 將使用者資訊存入sessionStorage
+          window.location.href = "member_center.html";
 
-        } else {
+        } else {  // 使用者不存在執行以下方法
           $('#title').fadeOut(500, function () {
             Swal.fire({
               position: 'top',

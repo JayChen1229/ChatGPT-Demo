@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #battle-container {
+            position: relative;
+            width: 500px;
+            height: 300px;
+            background-color: #e0e0e0;
+        }
+
+        #character,
+        #opponent {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: red;
+        }
+
+        #character {
+            left: 50px;
+            top: 50px;
+            animation: characterAttack 1s infinite;
+        }
+
+        #opponent {
+            right: 50px;
+            top: 50px;
+            animation: opponentDefend 1s infinite;
+        }
+
+        @keyframes characterAttack {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            50% {
+                transform: rotate(45deg);
+            }
+
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+
+        @keyframes opponentDefend {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="battle-container">
+        <div id="character"></div>
+        <div id="opponent"></div>
+    </div>
+
+</body>
+
+</html>

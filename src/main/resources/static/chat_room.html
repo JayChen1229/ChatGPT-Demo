@@ -33,28 +33,26 @@
 
     #output {
       border: none;
-
     }
   </style>
 </head>
 
 <body>
   <div id="your-element-id" class="background-image">
+    <!-- animated -->
+    <div id="large-header">
+      <canvas id="demo-canvas"></canvas>
+    </div>
+    <!-- animated -->
     <div class="login-box">
       <h2 id="title">Chat Room</h2>
       <form>
-
-
-        <textarea name="myText" id="output"></textarea>
-
+        <textarea name="myText" id="output" readonly></textarea>
         <br><br><br><br>
         <div class="user-box">
           <input type="text" name="text" required="" id="content">
           <label>Send a message</label>
         </div>
-
-
-
         <a href="#" class="btn">
           <span></span>
           <span></span>
@@ -67,8 +65,15 @@
   </div>
 </body>
 
+<!-- ============================================== jquery ============================================== -->
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+<!-- ============================================== sweetAlert ============================================== -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- ============================================== animated ============================================== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+<script src="./js/animated.js"></script>
 <script>
   //  防止圖片閃爍
   $(document).ready(function () {
@@ -82,8 +87,7 @@
 
     // 歡迎光臨
     let user = JSON.parse(sessionStorage.getItem("user"));
-    let message = `Welcome, ${user.username}! Please enter your text to start asking questions.`;
-
+    let message = `Welcome,! Please enter your text to start asking questions.`;
     let index = 0;
 
     function displayCharacters() {
@@ -91,19 +95,17 @@
         let substring = message.substring(0, index + 1);
         document.getElementById("output").innerHTML = substring;
         index++;
-        setTimeout(displayCharacters, 100); // 0.2秒後再次呼叫函數
+        setTimeout(displayCharacters, 10); // 0.2秒後再次呼叫函數
       }
     }
 
     displayCharacters();
   });
 
+  // 監聽enter
   $("#content").on("keypress", function (event) {
     if (event.which === 13) { // Enter 键的键码是 13
       event.preventDefault(); // 阻止默认的 Enter 键行为，如提交表单
-      // 在这里执行你想要的操作
-      console.log("Enter 键被按下");
-      // 可以调用你的函数或执行其他操作
       $(".btn").click();
     }
   });
@@ -112,25 +114,57 @@
     e.preventDefault();
     document.getElementById("output").innerHTML = "";
     message();
-
   });
 
 
   message = function () {
+    let type = sessionStorage.getItem("chatType");
+
     let content = $("#content").val();
     console.log(content);
 
-    $.ajax({
-      url: "/content",
-      method: "POST",
-      data: { content: content },
-      success: function (response) {
-        $("#content").val("");
-        console.log(response);
-      }
-    })
-  }
+    // 獲得會員資訊，如果等級過低則無法使用
+    let user = JSON.parse(sessionStorage.getItem("user"));
+    if (user.level > 5) {
+      user.level = user.level - 2;
+      let userString = JSON.stringify(user);
+      sessionStorage.setItem("user", userString);  // 將使用者資訊存入sessionStorage
+      // 傳送訊息
+      $.ajax({
+        url: "/content",
+        method: "POST",
+        data: { content: content },
+        success: function (response) {
+          $("#content").val("");
+          console.log(response);
+        }
+      })
 
+
+      // 等級下降
+      $.ajax({
+        url: "/users",
+        method: "PUT",
+        data: JSON.stringify(user),
+        contentType: "application/json",
+        success: function (response) {
+          if (response) {
+            console.log(response);
+          }
+        }
+      })
+
+    } else {
+      Swal.fire({
+        position: 'top',
+        title: 'Your level is too low',
+        timer: 1500,
+        showConfirmButton: false,
+        background: 'rgba(255, 255, 255, .7)'
+      });
+
+    }
+  }
 
   const sseSource = new EventSource(`/sse`);
   sseSource.addEventListener("message", function (event) {

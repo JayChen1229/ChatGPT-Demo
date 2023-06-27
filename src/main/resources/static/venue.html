@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+
+    <link rel="stylesheet" href="./style.css">
+
+    <style>
+        textarea {
+            font-size: 16px;
+            color: #fff;
+            background: rgba(0, 0, 0, .1);
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            height: 30vh;
+            resize: none;
+        }
+
+        .tableContainer {
+            height: 90vh;
+            width: 90vw;
+            overflow: auto;
+        }
+
+        .login-box {
+            width: 50vw;
+        }
+
+        @media screen and (max-width: 800px) {
+            .login-box {
+                width: 90vw;
+            }
+        }
+
+
+        #output {
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="your-element-id" class="background-image">
+        <!-- animated -->
+        <div id="large-header">
+            <canvas id="demo-canvas"></canvas>
+        </div>
+        <!-- animated -->
+        <div class="login-box tableContainer">
+            <h2 id="title">Fight Room</h2>
+            <form>
+                <textarea name="myText" id="output" readonly></textarea>
+                <a href="member_center.html" class="btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    GO back to member center
+                </a>
+                <br>
+                <a href="#" class="btn" onclick="fight(10)">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    LV1-LV20
+                </a>
+                <br>
+                <a href="#" class="btn" onclick="fight(50)">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    LV20-LV50
+                </a>
+                <br>
+                <a href="#" class="btn" onclick="fight(100)">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    LV50-LV100
+                </a>
+                <br>
+                <a href="#" class="btn" onclick="save()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    save
+                </a>
+            </form>
+        </div>
+    </div>
+</body>
+
+<!-- ============================================== jquery ============================================== -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+<!-- ============================================== sweetAlert ============================================== -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- ============================================== animated ============================================== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+<script src="./js/animated.js"></script>
+<script>
+    //  防止圖片閃爍
+    $(document).ready(function () {
+        var backgroundImage = new Image();
+        backgroundImage.src = "./img/backgroundimg.jpg";
+
+        $(backgroundImage).on("load", function () {
+            $("#your-element-id").css("filter", "none");
+            $("#your-element-id").css("opacity", "1");
+        });
+
+        // 歡迎光臨
+        let user = JSON.parse(sessionStorage.getItem("user"));
+        let message = `Choose the suitable room here for your battles. Each battle requires an entry fee, but you also have the potential to receive excessive rewards.
+
+LV1-LV20 entry fee: 10$
+LV20-LV50 entry fee: 50$
+LV50-LV100 entry fee: 100$`;
+        let index = 0;
+        function displayCharacters() {
+            if (index < message.length) {
+                let substring = message.substring(0, index + 1);
+                document.getElementById("output").innerHTML = substring;
+                index++;
+                setTimeout(displayCharacters, 10); // 0.2秒後再次呼叫函數
+            }
+        }
+        displayCharacters();
+        // 歡迎光臨
+
+
+
+
+
+        // 戰鬥計算
+        fight = function (fee) {
+            Swal.fire({
+                title: 'Confirm entry?',
+                text: `The entry fee for this level is ${fee}.`,
+                timer: 3000,
+                background: 'rgba(255, 255, 255, .7)'
+            }).then((result) => {
+                if (result.isConfirmed && fee === 10) {
+                    let randomNumber = Math.floor(Math.random() * 8) + 8;  // 隨機數
+                    user.money += randomNumber - 10;
+                    let userString = JSON.stringify(user);
+                    sessionStorage.setItem("user", userString);  // 將使用者資訊存入sessionStorage
+                    Swal.fire({
+                        title: `You Get ${randomNumber} points`,
+                        timer: 1500,
+                        showConfirmButton: false,
+                        background: 'rgba(255, 255, 255, .7)'
+                    })
+
+                } else if (result.isConfirmed && fee === 50) {
+                    if (user.level > 20) {
+                        let randomNumber = Math.floor(Math.random() * 60) + 30;
+                        user.money += randomNumber - 50;
+                        let userString = JSON.stringify(user);
+                        sessionStorage.setItem("user", userString);  // 將使用者資訊存入sessionStorage
+                        Swal.fire({
+                            title: `You Get ${randomNumber} points`,
+                            timer: 1500,
+                            showConfirmButton: false,
+                            background: 'rgba(255, 255, 255, .7)'
+                        })
+
+                    } else {
+                        Swal.fire({
+                            title: `Your level too low`,
+                            timer: 1500,
+                            showConfirmButton: false,
+                            background: 'rgba(255, 255, 255, .7)'
+                        })
+                    }
+
+
+                } else if (result.isConfirmed && fee === 100) {
+                    if (user.level > 50) {
+                        var randomNumber = Math.floor(Math.random() * 100) + 60;
+                        user.money += randomNumber - 100;
+                        let userString = JSON.stringify(user);
+                        sessionStorage.setItem("user", userString);  // 將使用者資訊存入sessionStorage
+                        Swal.fire({
+                            title: `You Get ${randomNumber} points`,
+                            timer: 1500,
+                            showConfirmButton: false,
+                            background: 'rgba(255, 255, 255, .7)'
+                        })
+
+                    } else {
+                        Swal.fire({
+                            title: `Your level too low`,
+                            timer: 1500,
+                            showConfirmButton: false,
+                            background: 'rgba(255, 255, 255, .7)'
+                        })
+                    }
+
+
+                }
+            });
+
+
+        }
+
+        save = function () {
+            $.ajax({
+                url: "/users",
+                method: "PUT",
+                data: JSON.stringify(user),
+                contentType: "application/json",
+                success: function (response) {
+                    if (response) {
+                        Swal.fire({
+                            position: 'top',
+                            title: 'Save success',
+                            timer: 1500,
+                            showConfirmButton: false,
+                            background: 'rgba(255, 255, 255, .7)'
+                        });
+                    }
+                }
+            })
+        }
+    });
+</script>
+
+</html>
