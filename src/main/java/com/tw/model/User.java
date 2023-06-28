@@ -17,12 +17,11 @@ import java.io.Serializable;
 public class User implements Serializable {
     @Id
     int id;
-    String username;
+    String userName;
     String email;
     String password;
     int frequency;
     int level;
     int money;
-    @Column(name = "max_score")
     int maxScore;
 }

@@ -35,6 +35,13 @@ public class UserService {
     public List<User> findAllUserOrderByMaxScore(){
         return userRepository.findAllByOrderByMaxScoreDesc();
     }
+    public List<User> findAllUserOrderLevel(){
+        return userRepository.findAllByOrderByLevelDesc();
+    }
+
+    public List<User> findUserByUserName(String userName){
+        return userRepository.findByUserNameOrderByMaxScoreDesc(userName);
+    }
 
     public void deleteUser(Integer id){
         userRepository.deleteById(id);

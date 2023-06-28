@@ -29,6 +29,19 @@
             resize: none;
             border: none;
         }
+
+        #progress-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(0, 0, 0, .1);
+            margin-bottom: 10px;
+        }
+
+        #progress {
+            width: 0;
+            height: 100%;
+            background-color: green;
+        }
     </style>
 </head>
 
@@ -40,8 +53,11 @@
         </div>
         <!-- animated -->
         <div class="login-box tableContainer">
-            <h2 id="title">Member Detail</h2>
+            <h2 id="title">Member Center</h2>
             <form>
+                <div id="progress-bar">
+                    <div id="progress"></div>
+                </div>
                 <textarea name="myText" id="output" readonly></textarea>
 
 
@@ -89,6 +105,17 @@
                     <span></span>
                     Upgrade
                 </a>
+                <br>
+                <br>
+                <br>
+
+                <a href="index.html" class="btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    Logout
+                </a>
             </form>
         </div>
     </div>
@@ -119,10 +146,17 @@
         // 歡迎光臨
         // 歡迎光臨
         let user = JSON.parse(sessionStorage.getItem("user"));
-        let message = `Welcome, ${user.username}! 
-LV:${user.level}
-$:${user.money}
-Max_score:${user.maxScore}`;
+        let message = `
+WeleCome ${user.userName}
+LV：${user.level}
+$：${user.money}
+Max Score：${user.maxScore}
+ChatGPT Chat Room：可以使用ChatGPT, 每次使用下降2等級
+LEADERBOARD：這裡可以查看排行榜
+Venue：賭場會場，這裡可以賺$$，每個房間都會有各自的入場費，以及相應且隨機的報酬
+Snake：貪吃蛇小遊戲，每次遊玩花費100$，每一點分數可獲得10$，等級越高速度會越慢，相對越簡單
+Upgrade：花費100$，升級1LV
+`;
         let index = 0;
 
         function displayCharacters() {
@@ -136,40 +170,78 @@ Max_score:${user.maxScore}`;
 
         displayCharacters();
 
-
+        let progress = 0;
+        let progressBar = $('#progress');
+        let requiredExp = 100;
+        for (let i = 2; i <= user.level; i++) {
+            requiredExp += 10 * (i - 1);
+        }
         $(".upgrade_btn").on("click", function (e) {
             e.preventDefault();
 
             if (user.money > 100) {
-                user.level = user.level + 1;
+                increaseProgress();
                 user.money = user.money - 100;
 
-                let userString = JSON.stringify(user);
-                sessionStorage.setItem("user", userString);  // 將使用者資訊存入sessionStorage
+                function increaseProgress() {
+                    progress += 100;
+                    $("#progress").css("width", (progress / requiredExp) * 100 + "%");
 
-                message = `Welcome, ${user.username}! 
+                    if (progress >= requiredExp) {
+                        levelUp();
+                    }
+                }
+
+                function levelUp() {
+                    user.level++;
+                    let userString = JSON.stringify(user);
+                    sessionStorage.setItem("user", userString); // 將使用者資訊存入sessionStorage
+
+                    message = `Welcome, ${user.userName}! 
 LV:${user.level}
 $:${user.money}`;
-                index = 0;
-                displayCharacters();
+                    index = 0;
+                    displayCharacters();
 
-                $.ajax({
-                    url: "/users",
-                    method: "PUT",
-                    data: JSON.stringify(user),
-                    contentType: "application/json",
-                    success: function (response) {
-                        if (response) {
-                            Swal.fire({
-                                position: 'top',
-                                title: 'Upgrade success',
-                                timer: 1500,
-                                showConfirmButton: false,
-                                background: 'rgba(255, 255, 255, .7)'
-                            });
+                    $.ajax({
+                        url: "/users",
+                        method: "PUT",
+                        data: JSON.stringify(user),
+                        contentType: "application/json",
+                        success: function (response) {
+                            if (response) {
+                                Swal.fire({
+                                    title: `恭喜！升級到等級 ${user.level}！`,
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                    background: "rgba(255, 255, 255, .7)"
+                                });
+                            }
+                            if (response && user.level === 10) {
+                                Swal.fire({
+                                    title: `恭喜！獲得新技能，扭曲時空！點擊Shift鍵，可以將時間緩速`,
+                                    timer: 15000,
+                                    background: "rgba(255, 255, 255, .7)"
+                                });
+                            }
+
                         }
-                    }
-                })
+                    });
+
+                    resetProgress();
+                    updateRequiredExp();
+                }
+
+                function resetProgress() {
+                    progress = 0;
+                    $("#progress").css("width", progress + "%");
+                }
+
+                function updateRequiredExp() {
+                    requiredExp += user.level * 5; // 每個等級所需經驗值增加規則（這裡假設每個等級增加 5 經驗值）
+                    console.log(`等級 ${user.level} 需要的經驗值：${requiredExp}`);
+                }
+
             } else {
                 Swal.fire({
                     position: 'top',
@@ -181,6 +253,8 @@ $:${user.money}`;
             }
         });
     });
+
+
 
 
 </script>

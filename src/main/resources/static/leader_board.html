@@ -67,19 +67,37 @@
 
 
 
-                <a href="#" class="btn get_btn">
+                <a href="#" class="btn " onclick="scoreRanking()">
                     <span></span>
                     <span></span>
                     <span></span>
                     <span></span>
-                    Show All User Data
+                    score ranking
                 </a>
-                <a href="#" class="btn delete_btn">
+                <a href="#" class="btn " onclick="levelRanking()">
                     <span></span>
                     <span></span>
                     <span></span>
                     <span></span>
-                    Delete this User
+                    level ranking
+                </a>
+                <a href="#" class="btn " onclick="searchUser()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    Search for a specific user
+                </a>
+                <br>
+                <br>
+                <br>
+
+                <a href="member_center.html" class="btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    Member Center
                 </a>
             </form>
         </div>
@@ -109,7 +127,7 @@
         });
 
         // 歡迎光臨
-        let message = `Welcome to the leader board`;
+        let message = `Welcome to the leader board. Here you can check the level ranking and score ranking of all players`;
 
         let index = 0;
 
@@ -121,16 +139,14 @@
                 setTimeout(displayCharacters, 10); // 0.2秒後再次呼叫函數
             }
         }
-
         displayCharacters();
     });
 
-    // 按鈕獲得所有資料
-    $(".get_btn").on("click", function (e) {
-        e.preventDefault();
-        $("#output").hide();
+
+    // 獲得分數排名
+    function scoreRanking() {
         $.ajax({
-            url: "/rank/users",
+            url: "/users/scoreRank",
             method: "GET",
             success: function (response) {
                 $("#content").val("");
@@ -140,7 +156,7 @@
                 for (let user of response) {
                     $(".tbody").append(` <tr>
                             <td>${id}</td>
-                            <td>${user.username}</td>
+                            <td>${user.userName}</td>
                             <td>${user.level}</td>
                             <td>${user.money}</td>
                             <td>${user.maxScore}</td>
@@ -150,76 +166,86 @@
                 }
             }
         })
-    });
+    }
 
-
-
-    $(".delete_btn").on("click", function (e) {
-        e.preventDefault();
-        deleteMessage();
-    });
-
-    deleteMessage = function () {
-        let number = $("#content").val();
-        console.log(content);
-
+    // 獲得分數排名
+    function levelRanking() {
         $.ajax({
-            url: "/users/" + number,
-            method: "DELETE",
+            url: "/users/levelRank",
+            method: "GET",
             success: function (response) {
                 $("#content").val("");
-                if (response) {
-                    Swal.fire({
-                        position: 'top',
-                        title: 'Delete success',
-                        timer: 1500,
-                        showConfirmButton: false,
-                        background: 'rgba(255, 255, 255, .7)'
-                    });
+                $(".tbody").empty();
+                console.log(response);
+                let id = 1;
+                for (let user of response) {
+                    $(".tbody").append(` <tr>
+                            <td>${id}</td>
+                            <td>${user.userName}</td>
+                            <td>${user.level}</td>
+                            <td>${user.money}</td>
+                            <td>${user.maxScore}</td>
+                        </tr>`);
+                    id++
 
-                } else {
-                    Swal.fire({
-                        position: 'top',
-                        title: 'Delete fail',
-                        timer: 1500,
-                        showConfirmButton: false,
-                        background: 'rgba(255, 255, 255, .7)'
-                    });
                 }
-                $(".get_btn").click();
             }
         })
     }
 
-    update = function () {
-        let message = $("#content").val();
-        let [userId, money] = message.split(",");
-
+    // 獲得特定使用者資料
+    function searchUser() {
+        let userName = $("#content").val();
         $.ajax({
-            url: "/users/" + userId,
-            method: "PUT",
-            data: { money: money },
+            url: "/users/userName",
+            method: "GET",
+            data: { userName: userName },
             success: function (response) {
-                if (response) {
-                    Swal.fire({
-                        position: 'top',
-                        title: 'Update success',
-                        timer: 1500,
-                        showConfirmButton: false,
-                        background: 'rgba(255, 255, 255, .7)'
-                    });
+                $("#content").val("");  // 清空資料
+                $(".tbody").empty();
+                console.log(response);
+                let id = 1;
+                for (let user of response) {
+                    $(".tbody").append(` <tr>
+                            <td>${id}</td>
+                            <td>${user.userName}</td>
+                            <td>${user.level}</td>
+                            <td>${user.money}</td>
+                            <td>${user.maxScore}</td>
+                        </tr>`);
+                    id++
+
                 }
-                $(".get_btn").click();
             }
-
         })
-
-
     }
 
+    // 按鈕獲得所有資料
+    // $(".get_btn").on("click", function (e) {
+    //     e.preventDefault();
+    //     $("#output").hide();
+    //     $.ajax({
+    //         url: "/rank/users",
+    //         method: "GET",
+    //         success: function (response) {
+    //             $("#content").val("");
+    //             $(".tbody").empty();
+    //             console.log(response);
+    //             let id = 1;
+    //             for (let user of response) {
+    //                 $(".tbody").append(` <tr>
+    //                         <td>${id}</td>
+    //                         <td>${user.userName}</td>
+    //                         <td>${user.level}</td>
+    //                         <td>${user.money}</td>
+    //                         <td>${user.maxScore}</td>
+    //                     </tr>`);
+    //                 id++
 
-
-
+    //             }
+    //         }
+    //     })
+    // });
 </script>
 
 </html>

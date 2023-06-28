@@ -87,7 +87,7 @@
 
     // 歡迎光臨
     let user = JSON.parse(sessionStorage.getItem("user"));
-    let message = `Welcome,! Please enter your text to start asking questions.`;
+    let message = `Welcome,${user.userName}! Please enter your text to start asking questions.`;
     let index = 0;
 
     function displayCharacters() {

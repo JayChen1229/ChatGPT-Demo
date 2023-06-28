@@ -22,10 +22,21 @@ public class UserController {
         return userService.findAllUser();
     }
 
-    @GetMapping("/rank/users")
+    @GetMapping("/users/scoreRank")
     public List<User> getUserByScore(){
         return userService.findAllUserOrderByMaxScore();
     }
+    @GetMapping("/users/levelRank")
+    public List<User> getUserByLevel(){
+        return userService.findAllUserOrderLevel();
+    }
+    @GetMapping("/users/userName")
+    public List<User> getUserByUserName(@RequestParam String userName){
+        return userService.findUserByUserName(userName);
+    }
+
+
+
 
     @PutMapping("/users")
     public Boolean updateUser(@RequestBody User user){

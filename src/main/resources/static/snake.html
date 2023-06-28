@@ -156,8 +156,14 @@
 
         // 歡迎光臨
         let user = JSON.parse(sessionStorage.getItem("user"));
-        let message = `Snake game is a simple and addictive game where you control a pixelated snake, eat dots, and grow longer. Avoid obstacles and yourself to achieve a high score. Enjoy the nostalgic charm of classic gaming in this timeless experience.
-entry fee: 10$        
+        let message = `Welcome to the Snake Game! The entrance fee is $100, and you can earn $10 for every point.
+Game rules:
+W: Up
+D: Right
+S: Down
+A: Left
+Spacebar: Pause
+Reminder: The higher the score, the greater the difficulty!       
 `;
         let index = 0;
 
@@ -177,6 +183,13 @@ entry fee: 10$
         //     boardElement.scrollIntoView({ behavior: "smooth", block: "center" });
 
         // })
+    });
+
+    // 禁止空白建向下
+    window.addEventListener("keydown", function (event) {
+        if (event.keyCode === 32 && event.target === document.body) {
+            event.preventDefault();
+        }
     });
 
 

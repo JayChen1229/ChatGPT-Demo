@@ -2,8 +2,14 @@ let snakeArray = []; /*初始化蛇关节的数组*/
 let isPause = false; /*游戏是否暂停：未暂停*/
 let snakeSize = 5; /*蛇的初始长度*/
 let direct = "right"; /*蛇初始方向：向右*/
-let speed = 60; /*蛇移动初始速度：80*/ // 數字越低越快
+let user = JSON.parse(sessionStorage.getItem("user"));
+let speed = 35 + user.level; /*蛇移动初始速度：35+等級*/ // 數字越低越快
 let score, timer, board, bean; /*游戏初始分数显示区，定时器，面板，豆*/
+// 如果等級大於10等，可使用技能
+let isShiftPressed = true;
+if (user.level >= 10) {
+  isShiftPressed = false;
+}
 
 // 初始化(){
 onload = () => {
@@ -82,7 +88,6 @@ function createBean() {
   board.appendChild(bean);
 }
 
-// 監聽鍵盤
 function keyListener() {
   document.onkeydown = (event) => {
     let oEvent = event || window.event;
@@ -120,24 +125,58 @@ function keyListener() {
         }
         isPause = !isPause;
         break;
+      case 16:
+        // 按了 Shift 鍵：速度下降 2 秒，然後回到原本的速度
+        changeSpeed();
+        break;
     }
   };
 }
 
 // 游戏开始(){
 function start() {
-  board.scrollIntoView({ behavior: "smooth", block: "center" });
-  //     清除旧定时器
+  if (user.money < 100) {
+    Swal.fire({
+      title: "You dont have enough money",
+      timer: 1500,
+      background: "rgba(255, 255, 255, .7)",
+    }).then(() => {
+      setTimeout(() => {
+        // 過一段時間自動刷新頁面
+        location.reload();
+      }, 500);
+    });
+  }
+
+  // 清除舊定時器
   clearInterval(timer);
-  //     开启新定时器{
-  timer = setInterval(() => {
-    //     蛇移动()
-    move();
-    //     撞自己()：判断本次移动蛇是否撞到自己
-    isHit();
-    //      吃豆子()：判断本次移动蛇是否吃到豆子
-    isEat();
-  }, speed);
+  // 開啟新定時器
+  timer = setInterval(gameLoop, speed);
+}
+
+function gameLoop() {
+  // 蛇的移動邏輯
+  move();
+  // 撞到自己的檢查邏輯
+  isHit();
+  // 吃到豆子的檢查邏輯
+  isEat();
+}
+
+// 在需要的時候更改速度
+function changeSpeed() {
+  if (!isShiftPressed) {
+    isShiftPressed = true;
+    clearInterval(timer);
+    speed += 200;
+    timer = setInterval(gameLoop, speed);
+    setTimeout(() => {
+      clearInterval(timer);
+      speed -= 200;
+      timer = setInterval(gameLoop, speed);
+      isShiftPressed = false;
+    }, 2000);
+  }
 }
 
 // 蛇移动(){
@@ -219,6 +258,10 @@ function isEat() {
     if (snakeArray[0].offsetTop === bean.offsetTop) {
       //         分数++
       score.innerText = parseInt(score.innerText) + 1;
+      //         速度++
+      clearInterval(timer);
+      speed -= 1;
+      timer = setInterval(gameLoop, speed);
       //         创建一个新的蛇关节
       let snake = document.createElement("div");
       //         新蛇关节的出生坐标就是被吃掉豆子的坐标
@@ -267,8 +310,12 @@ function reset() {
 function saveScore() {
   // 將 user 由json 轉物件
   let user = JSON.parse(sessionStorage.getItem("user"));
-  user.maxScore = parseInt(score.innerText);
+  let thisScore = parseInt(score.innerText);
 
+  if (user.maxScore < thisScore) {
+    user.maxScore = thisScore;
+  }
+  user.money += thisScore * 10 - 100;
   // 將 user 由物件 轉json
   let userString = JSON.stringify(user);
   sessionStorage.setItem("user", userString); // 將使用者資訊存入sessionStorage
@@ -279,8 +326,7 @@ function saveScore() {
     data: userString,
     contentType: "application/json",
     success: function (response) {
-      if (response) {
-      }
+      console.log(response);
     },
   });
 }
