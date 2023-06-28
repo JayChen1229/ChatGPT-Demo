@@ -93,25 +93,29 @@ function keyListener() {
     let oEvent = event || window.event;
     switch (oEvent.keyCode) {
       case 65:
-        // 按了 "a" 鍵：當方向不為右，方向改為左
+      case 74:
+        // 按下 "a" 鍵或 "j" 鍵：當方向不為右，方向改為左
         if (direct !== "right") {
           direct = "left";
         }
         break;
       case 87:
-        // 按了 "w" 鍵：當方向不為下，方向改為上
+      case 73:
+        // 按下 "w" 鍵或 "i" 鍵：當方向不為下，方向改為上
         if (direct !== "down") {
           direct = "up";
         }
         break;
       case 68:
-        // 按了 "d" 鍵：當方向不為左，方向改為右
+      case 76:
+        // 按下 "d" 鍵或 "l" 鍵：當方向不為左，方向改為右
         if (direct !== "left") {
           direct = "right";
         }
         break;
       case 83:
-        // 按了 "s" 鍵：當方向不為上，方向改為下
+      case 75:
+        // 按下 "s" 鍵或 "k" 鍵：當方向不為上，方向改為下
         if (direct !== "up") {
           direct = "down";
         }

@@ -73,11 +73,28 @@
         .start_btn {
             margin-top: 1px !important;
         }
+
+        /* music */
+        audio::-webkit-media-controls-start-playback-button {
+            display: none;
+        }
+
+        audio::-webkit-media-controls-play-button,
+        audio::-webkit-media-controls-pause-button {
+            display: none !important;
+        }
+
+        audio::-webkit-media-controls {
+            display: none !important;
+        }
     </style>
 </head>
 
 <body>
-
+    <!-- music -->
+    <audio src="./music/162.Mushroom of Ghost.mp3" autoplay loop>
+        Your browser does not support the audio element.
+    </audio>
     <div id="your-element-id" class="background-image">
         <!-- animated -->
         <div id="large-header">
@@ -158,10 +175,10 @@
         let user = JSON.parse(sessionStorage.getItem("user"));
         let message = `Welcome to the Snake Game! The entrance fee is $100, and you can earn $10 for every point.
 Game rules:
-W: Up
-D: Right
-S: Down
-A: Left
+W or I: Up
+D or L: Right
+S or K: Down
+A or J: Left
 Spacebar: Pause
 Reminder: The higher the score, the greater the difficulty!       
 `;

@@ -59,7 +59,7 @@ public class UserController {
             userService.save(user);
             return true;
         }
-        return true;
+        return false;
     }
     @DeleteMapping("/users/{userId}")
     public Boolean deleteUser(@PathVariable int userId){
