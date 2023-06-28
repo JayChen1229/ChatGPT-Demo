@@ -3,7 +3,7 @@ let isPause = false; /*游戏是否暂停：未暂停*/
 let snakeSize = 5; /*蛇的初始长度*/
 let direct = "right"; /*蛇初始方向：向右*/
 let user = JSON.parse(sessionStorage.getItem("user"));
-let speed = 35 + user.level; /*蛇移动初始速度：35+等級*/ // 數字越低越快
+let speed = 70 + user.level; /*蛇移动初始速度：35+等級*/ // 數字越低越快
 let score, timer, board, bean; /*游戏初始分数显示区，定时器，面板，豆*/
 // 如果等級大於10等，可使用技能
 let isShiftPressed = true;
@@ -260,7 +260,7 @@ function isEat() {
       score.innerText = parseInt(score.innerText) + 1;
       //         速度++
       clearInterval(timer);
-      speed -= 1;
+      speed -= 2;
       timer = setInterval(gameLoop, speed);
       //         创建一个新的蛇关节
       let snake = document.createElement("div");
