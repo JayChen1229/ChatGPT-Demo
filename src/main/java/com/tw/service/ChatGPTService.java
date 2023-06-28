@@ -21,9 +21,8 @@ public class ChatGPTService {
     private static final int MAX_TOKENS = 2500; // 設定每次請求的字數上限 (一個中文字2Token, 一個英文字1Token)
     private static final String URL = "https://api.openai.com/v1/chat/completions"; // ChatGPT API 的 URL
 
-
-    private String API_KEY = "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"; // 你的 API 密鑰
-
+    @Value("${API_KEY}")
+    private String API_KEY; // 你的 API 密鑰
     // 設定 Service 基本參數
     private String output;
 

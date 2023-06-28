@@ -11,6 +11,9 @@ if (user.level >= 10) {
   isShiftPressed = false;
 }
 
+//獲取音樂
+let eatBeanAudio = document.getElementById("eatBean");
+
 // 初始化(){
 onload = () => {
   //     初始化游戏面板和游戏分数显示区
@@ -266,6 +269,8 @@ function isEat() {
       clearInterval(timer);
       speed -= 2;
       timer = setInterval(gameLoop, speed);
+      // 音效
+      playEatBeanMusic();
       //         创建一个新的蛇关节
       let snake = document.createElement("div");
       //         新蛇关节的出生坐标就是被吃掉豆子的坐标
@@ -333,4 +338,9 @@ function saveScore() {
       console.log(response);
     },
   });
+}
+
+// 播放音乐
+function playEatBeanMusic() {
+  eatBeanAudio.play();
 }

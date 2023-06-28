@@ -237,3 +237,17 @@ body {
   background: #4bc3ca;
 }
 /* scrollar bar */
+
+/* music */
+audio::-webkit-media-controls-start-playback-button {
+  display: none;
+}
+
+audio::-webkit-media-controls-play-button,
+audio::-webkit-media-controls-pause-button {
+  display: none !important;
+}
+
+audio::-webkit-media-controls {
+  display: none !important;
+}

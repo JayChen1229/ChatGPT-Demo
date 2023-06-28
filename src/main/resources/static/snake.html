@@ -73,26 +73,15 @@
         .start_btn {
             margin-top: 1px !important;
         }
-
-        /* music */
-        audio::-webkit-media-controls-start-playback-button {
-            display: none;
-        }
-
-        audio::-webkit-media-controls-play-button,
-        audio::-webkit-media-controls-pause-button {
-            display: none !important;
-        }
-
-        audio::-webkit-media-controls {
-            display: none !important;
-        }
     </style>
 </head>
 
 <body>
     <!-- music -->
     <audio src="./music/162.Mushroom of Ghost.mp3" autoplay loop>
+        Your browser does not support the audio element.
+    </audio>
+    <audio src="./music/eatBean.mp3" id="eatBean">
         Your browser does not support the audio element.
     </audio>
     <div id="your-element-id" class="background-image">
@@ -158,6 +147,7 @@
 
 <!-- ============================================== animated ============================================== -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+<!-- self made -->
 <script src="./js/animated.js"></script>
 <script src="./js/snake.js"></script>
 <script>

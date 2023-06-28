@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+
+    <link rel="stylesheet" href="./style.css">
+
+    <style>
+        textarea {
+            font-size: 16px;
+            color: #fff;
+            background: rgba(0, 0, 0, .1);
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            height: 30vh;
+            resize: none;
+        }
+
+        .tableContainer {
+            height: 90vh;
+            width: 90vw;
+            overflow: auto;
+        }
+
+        .login-box {
+            width: 50vw;
+        }
+
+        @media screen and (max-width: 800px) {
+            .login-box {
+                width: 90vw;
+            }
+        }
+
+
+        #output {
+            border: none;
+        }
+
+        /* 獎池數字 */
+        .count-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: #ffffff;
+            text-align: center;
+            /* background-color: #f5f5f5; */
+            font-family: 'Comic Sans MS', cursive;
+            text-shadow: 2px 2px 4px #000;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="your-element-id" class="background-image">
+        <!-- animated -->
+        <div id="large-header">
+            <canvas id="demo-canvas"></canvas>
+        </div>
+        <!-- animated -->
+        <div class="login-box tableContainer">
+            <h2 id="title">Current prize pool</h2>
+
+            <div class="count-number">0</div>
+            <form>
+                <textarea name="myText" id="output" readonly></textarea>
+                <a href="#" class="btn" onclick="clickLuck()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    Try Your Luck
+                </a>
+                <br>
+                <a href="member_center.html" class="btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    GO back to member center
+                </a>
+
+
+            </form>
+        </div>
+    </div>
+</body>
+
+<!-- ============================================== jquery ============================================== -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+<!-- ============================================== sweetAlert ============================================== -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- ============================================== animated ============================================== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+<!-- self made -->
+<script src="./js/animated.js"></script>
+<script>
+    let user = JSON.parse(sessionStorage.getItem("user"));
+    // let prizepool = 0;
+    //  防止圖片閃爍
+    $(document).ready(function () {
+        var backgroundImage = new Image();
+        backgroundImage.src = "./img/backgroundimg.jpg";
+
+        $(backgroundImage).on("load", function () {
+            $("#your-element-id").css("filter", "none");
+            $("#your-element-id").css("opacity", "1");
+        });
+
+        // 歡迎光臨
+
+        let message = `Welcome to Lottery, the ultimate click-to-win experience! Simply click the button and watch the prize pool grow. With each click, you increase your chances of winning the grand jackpot. Will you be the lucky winner? Start clicking now and find out!`;
+        let index = 0;
+
+        function displayCharacters() {
+            if (index < message.length) {
+                let substring = message.substring(0, index + 1);
+                document.getElementById("output").innerHTML = substring;
+                index++;
+                setTimeout(displayCharacters, 10); // 0.2秒後再次呼叫函數
+            }
+        }
+        displayCharacters();
+        // 歡迎光臨
+        // 初始化獎池
+        $.ajax({
+            type: "GET",
+            url: "/prizePools",
+            success: function (response) {
+                $(this).text(Math.floor(0))
+
+                // 增加動畫
+                $(".count-number").animate(
+
+                    // 動畫終點
+                    { num: response },
+                    {
+                        // 持續時間
+                        duration: 5000,
+                        step: function (now) {
+                            $(this).text(Math.floor(now)); // 更新數字
+                        },
+                    }
+                );
+            }
+        });
+
+
+    });
+
+
+    function clickLuck() {
+        // 減少資金
+        user.money -= 20;
+        // 更新狀態
+        let userString = JSON.stringify(user);
+        sessionStorage.setItem("user", userString);  // 將使用者資訊存入sessionStorage
+        // 
+        // 玩家錢減少
+        updateUser(userString);
+        // 獎池增加
+        updatePrizepool();
+
+
+        // 設計中獎機率
+        let randomNumber = Math.floor(Math.random() * 10);  // 隨機數
+        console.log(randomNumber);
+        if (randomNumber === 2) {
+            Swal.fire({
+                title: `恭喜中獎拉!!!!!!!`,
+                timer: 1500,
+                showConfirmButton: false,
+                background: 'rgba(255, 255, 255, .7)'
+            })
+
+            $.ajax({
+                type: "GET",
+                url: "/prizePools",
+                success: function (response) {
+                    // 該玩家獲得獎池所有金額
+                    user.money += response;
+                    // 更新狀態
+                    let userString = JSON.stringify(user);
+                    sessionStorage.setItem("user", userString);  // 將使用者資訊存入sessionStorage
+                    updateUser(userString);
+                }
+            });
+
+            updatePrizepoolTOZero()
+        }
+
+        function updatePrizepool() {
+            $.ajax({
+                type: "GET",
+                url: "/prizePools/update",
+                success: function (response) {
+                    console.log(response);
+                    $(this).text(Math.floor(0))
+                    // 增加動畫
+                    $(".count-number").animate(
+
+                        // 動畫終點
+                        { num: response },
+                        {
+                            // 持續時間
+                            duration: 1000,
+                            step: function (now) {
+                                $(this).text(Math.floor(now)); // 更新數字
+                            },
+                        }
+                    );
+                }
+            });
+        }
+
+        function updatePrizepoolTOZero() {
+            $.ajax({
+                type: "GET",
+                url: "/prizePools/zero",
+                success: function (response) {
+                    console.log(response);
+                    $(this).text(Math.floor(0))
+                    // 增加動畫
+                    $(".count-number").animate(
+
+                        // 動畫終點
+                        { num: response },
+                        {
+                            // 持續時間
+                            duration: 1000,
+                            step: function (now) {
+                                $(this).text(Math.floor(now)); // 更新數字
+                            },
+                        }
+                    );
+                }
+            });
+        }
+
+        function updateUser(userString) {
+            $.ajax({
+                url: "/users",
+                method: "PUT",
+                data: userString,
+                contentType: "application/json",
+                success: function (response) {
+                    console.log(response);
+                }
+            });
+        }
+    }
+</script>
+
+</html>

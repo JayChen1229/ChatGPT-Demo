@@ -19,17 +19,38 @@ public class PrizePoolController {
 
     // 取得獎池資料
     @GetMapping("/prizePools")
-    public PrizePool getPrizePool(){
-        return prizePoolRepository.findById(1).orElse(null);
+    public double getPrizePool(){
+        PrizePool prizePool = prizePoolRepository.findById(1).orElse(null);
+        return prizePool.getLumpSum();
     }
+
+    @GetMapping("/prizePools/update")
+    public double getPrizePoolUpdate() {
+        PrizePool prizePool = prizePoolRepository.findById(1).orElse(null);
+        if (prizePool != null) {
+            prizePool.setLumpSum(prizePool.getLumpSum() + 100);
+            prizePoolRepository.save(prizePool); // 保存更新後的獎池數據
+            return prizePool.getLumpSum();
+        }
+        return 0.0; // 或者返回其他預設值，表示未找到獎池數據
+    }
+
 
 
     // 更新獎池資料
     @PutMapping("/prizePools")
-    public Boolean updatePrizePool(@RequestParam int lumpSum){
+    public double updatePrizePool(@RequestParam int lumpSum){
         PrizePool prizePool = prizePoolRepository.findById(1).orElse(null);
         prizePool.setLumpSum(lumpSum);
         prizePoolRepository.save(prizePool);
-        return true;
+        return lumpSum;
+    }
+
+    @GetMapping("/prizePools/zero")
+    public double updatePrizePoolToZero(){
+        PrizePool prizePool = prizePoolRepository.findById(1).orElse(null);
+        prizePool.setLumpSum(0);
+        prizePoolRepository.save(prizePool);
+        return prizePool.getLumpSum();
     }
 }
