@@ -315,7 +315,7 @@ function saveScore() {
   if (user.maxScore < thisScore) {
     user.maxScore = thisScore;
   }
-  user.money += thisScore * 10 - 100;
+  user.money += thisScore * 20 - 100; // 增加money
   // 將 user 由物件 轉json
   let userString = JSON.stringify(user);
   sessionStorage.setItem("user", userString); // 將使用者資訊存入sessionStorage

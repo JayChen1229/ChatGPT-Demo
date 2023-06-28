@@ -77,6 +77,13 @@
                     <span></span>
                     Show All User Data
                 </a>
+                <a href="#" class="btn " onclick="searchUser()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    Search for a specific user
+                </a>
                 <a href="#" class="btn delete_btn">
                     <span></span>
                     <span></span>
@@ -226,6 +233,36 @@
         })
 
 
+    }
+
+    // 獲得特定使用者資料
+    function searchUser() {
+        let userName = $("#content").val();
+        $.ajax({
+            url: "/users/userName",
+            method: "GET",
+            data: { userName: userName },
+            success: function (response) {
+                $("#content").val("");  // 清空資料
+                $(".tbody").empty();
+                console.log(response);
+                let id = 1;
+                for (let user of response) {
+                    $(".tbody").append(` <tr>
+                            <td>${user.id}</td>
+                            <td>${user.userName}</td>
+                            <td>${user.email}</td>
+                            <td>${user.password}</td>
+                            <td>${user.frequency}</td>
+                            <td>${user.level}</td>
+                            <td>${user.money}</td>
+                            <td>${user.maxScore}</td>
+                        </tr>`);
+                    id++
+
+                }
+            }
+        })
     }
 
 
