@@ -23,7 +23,7 @@ public class LoginController {
         User theUser = userService.findUser(user);
         if(theUser != null){
             // 登入次數
-            theUser.setFrequency(theUser.getFrequency()+1);
+            theUser.setLoginTimes(theUser.getLoginTimes()+1);
             userService.save(theUser);
             return theUser;
         }
@@ -41,5 +41,4 @@ public class LoginController {
         }
         return false;
     }
-
 }

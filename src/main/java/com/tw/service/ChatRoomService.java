@@ -14,7 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 @Service
-public class ChatGPTService {
+public class ChatRoomService {
 
     // 設定GPT API 基本參數
     private static final String MODEL = "gpt-3.5-turbo"; // 設定模型名稱
@@ -199,8 +199,8 @@ public class ChatGPTService {
 
     //  ======================================== 測試main ========================================
     public static void main(String[] args) {
-        ChatGPTService chatGPTService = new ChatGPTService();
-        chatGPTService.readResponse("hi");
-        chatGPTService.getOutput();
+        ChatRoomService chatRoomService = new ChatRoomService();
+        chatRoomService.readResponse("hi");
+        chatRoomService.getOutput();
     }
 }

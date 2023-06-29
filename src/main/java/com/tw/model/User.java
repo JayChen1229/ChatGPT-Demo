@@ -20,7 +20,8 @@ public class User implements Serializable {
     String userName;
     String email;
     String password;
-    int frequency;
+    int loginTimes;
+    int playTimes;
     int level;
     int money;
     int maxScore;

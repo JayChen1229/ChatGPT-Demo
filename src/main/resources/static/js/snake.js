@@ -13,6 +13,7 @@ if (user.level >= 10) {
 
 //獲取音樂
 let eatBeanAudio = document.getElementById("eatBean");
+let slowDownAudio = document.getElementById("slowDown");
 
 // 初始化(){
 onload = () => {
@@ -142,9 +143,10 @@ function keyListener() {
 
 // 游戏开始(){
 function start() {
+  // 判斷還有沒有錢
   if (user.money < 100) {
     Swal.fire({
-      title: "You dont have enough money",
+      title: "You don't have enough money",
       timer: 1500,
       background: "rgba(255, 255, 255, .7)",
     }).then(() => {
@@ -165,7 +167,11 @@ function gameLoop() {
   // 蛇的移動邏輯
   move();
   // 撞到自己的檢查邏輯
-  isHit();
+
+  // 設定條件 等級大等於20開啟自我碰撞
+  if (user.level >= 20) {
+    isHit();
+  }
   // 吃到豆子的檢查邏輯
   isEat();
 }
@@ -173,6 +179,7 @@ function gameLoop() {
 // 在需要的時候更改速度
 function changeSpeed() {
   if (!isShiftPressed) {
+    playslowDownMusic();
     isShiftPressed = true;
     clearInterval(timer);
     speed += 200;
@@ -324,7 +331,7 @@ function saveScore() {
   if (user.maxScore < thisScore) {
     user.maxScore = thisScore;
   }
-  user.money += thisScore * 20 - 100; // 增加money
+  user.money += thisScore * 20 - 50; // 增加money
   // 將 user 由物件 轉json
   let userString = JSON.stringify(user);
   sessionStorage.setItem("user", userString); // 將使用者資訊存入sessionStorage
@@ -343,4 +350,7 @@ function saveScore() {
 // 播放音乐
 function playEatBeanMusic() {
   eatBeanAudio.play();
+}
+function playslowDownMusic() {
+  slowDownAudio.play();
 }

@@ -2,12 +2,24 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>TripLight | Game | Leader Board</title>
+
+    <!-- 加上才能使用RWD -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+
+    <!-- 關鍵字設定 -->
+    <meta name="keywords" content="旅遊, 行程規劃, 票券, AI, ChatGPT, Google map, 客製化行程, 套裝行程" />
+    <!-- 網頁介紹 -->
+    <meta name="description" content="我們提供旅遊行程規劃服務，以及販售套裝行程 票券 等等" />
 
     <!-- bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="./style.css">
+
+    <!-- 載入icon -->
+    <link rel="shortcut icon" href="./img/icon.png" />
+    <link rel="bookmark" href="./img/icon.png" />
 
 
     <style>
@@ -25,7 +37,7 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             width: 100%;
-            height: 30vh;
+            height: 40vh;
             resize: none;
             border: none;
         }
@@ -33,6 +45,10 @@
 </head>
 
 <body>
+    <!-- music -->
+    <audio src="./music/background.mp3" id="backgroundMusic" autoplay loop>
+        Your browser does not support the audio element.
+    </audio>
     <div id="your-element-id" class="background-image">
         <!-- animated -->
         <div id="large-header">
@@ -41,6 +57,7 @@
         <!-- animated -->
         <div class="login-box tableContainer">
             <h2 id="title">Leader Board</h2>
+            <button class="chinese_btn">中文</button>
             <form>
                 <textarea name="myText" id="output" readonly></textarea>
                 <table class="table" style="color: white;">
@@ -116,6 +133,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
 <!-- self made -->
 <script src="./js/animated.js"></script>
+<script src="./js/common.js"></script>
 <script>
     //  防止圖片閃爍
     $(document).ready(function () {
@@ -128,7 +146,11 @@
         });
 
         // 歡迎光臨
-        let message = `Welcome to the leader board. Here you can check the level ranking and score ranking of all players`;
+        let message = `Welcome to the leaderboard. Here you can check the level rankings and score rankings of all players. You can also view specific player information by entering their name and clicking the button on the right.
+
+The first-ranked player with a level of 20 and the first-ranked player with a highest score of 35 will both receive a double ticket to XPARK, provided by this travel website.
+
+Starting from now until the end of July, the player with the highest level and the player with the highest score will be rewarded with a 3-day trip for two to Green Island.`;
 
         let index = 0;
 
@@ -137,10 +159,25 @@
                 let substring = message.substring(0, index + 1);
                 document.getElementById("output").innerHTML = substring;
                 index++;
-                setTimeout(displayCharacters, 10); // 0.2秒後再次呼叫函數
+                setTimeout(displayCharacters, 5); // 0.2秒後再次呼叫函數
             }
         }
         displayCharacters();
+        // 監聽翻譯按鈕
+        $(".chinese_btn").on("click", changeLangurage);
+
+        // 中文翻譯
+        function changeLangurage() {
+            message = `歡迎來到排行榜。在這裡，您可以查看所有玩家的等級排名和分數排名
+也可以查看特定玩家的資訊，只需要輸入玩家名稱並點擊最右邊的按鈕即可查詢
+首位等級達到20級的玩家，以及首位最高分數達到35的玩家
+都能夠獲得本旅遊網站所提供的XPARK雙人套票
+即日起至7月20日截止，等級與分數最高的玩家，可獲得綠島3日遊雙人行程
+`;
+            index = 0;
+            displayCharacters();
+        }
+
     });
 
 
