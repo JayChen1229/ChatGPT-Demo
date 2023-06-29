@@ -76,6 +76,9 @@
     <audio src="./music/background.mp3" id="backgroundMusic" autoplay loop>
         Your browser does not support the audio element.
     </audio>
+    <audio src="./music/winlottery.mp3" id="winlottery">
+        Your browser does not support the audio element.
+    </audio>
     <div id="your-element-id" class="background-image">
         <!-- animated -->
         <div id="large-header">
@@ -83,7 +86,7 @@
         </div>
         <!-- animated -->
         <div class="login-box tableContainer">
-            <h2 id="title">Current prize pool</h2>
+            <h2 id="title">Current Prize Pool</h2>
             <div class="count-number">0</div>
             <button class="chinese_btn">中文</button>
             <form>
@@ -122,6 +125,12 @@
 <script src="./js/animated.js"></script>
 <script src="./js/common.js"></script>
 <script>
+
+    //獲取音樂
+    let winlotteryAudio = document.getElementById("winlottery");
+    let backgroundMusicAudio = document.getElementById("backgroundMusic");
+
+
     let user = JSON.parse(sessionStorage.getItem("user"));
     // let prizepool = 0;
     //  防止圖片閃爍
@@ -215,19 +224,8 @@ Note: The probability of winning is 5%.`;
         let randomNumber = Math.floor(Math.random() * 20);  // 隨機數
         console.log(randomNumber);
         if (randomNumber === 12) {
-            Swal.fire({
-                title: '恭喜中獎拉!!!!!!!',
-                timer: 15000,
-                background: 'rgba(255, 255, 255, .7)',
-                backdrop: `
-    rgba(0, 0, 123, 0.1)
-    url("/img/nyan-cat.gif")
-    center / cover
-  `
-            });
-
-
-
+            winlotteryAudio.play();
+            backgroundMusicAudio.pause();
             $.ajax({
                 type: "GET",
                 url: "/prizePools",
@@ -238,6 +236,23 @@ Note: The probability of winning is 5%.`;
                     let userString = JSON.stringify(user);
                     sessionStorage.setItem("user", userString);  // 將使用者資訊存入sessionStorage
                     updateUser(userString);
+                    Swal.fire({
+                        title: `恭喜中獎拉!!!!!!!
+獲得總獎金${response} !!!!!!`,
+                        timer: 30000,
+                        background: 'rgba(255, 255, 255, .7)',
+                        backdrop: `
+    rgba(0, 0, 123, 0.1)
+    url("/img/nyan-cat.gif")
+    center / cover
+  `
+                    }).then(() => {
+                        // 在確認按鈕點擊後執行的程式碼
+                        winlotteryAudio.pause(); // 暫停音樂
+                        backgroundMusicAudio.play();
+                        winlotteryAudio.currentTime = 0; // 將音樂時間歸零
+                    });
+
                 }
             });
 
