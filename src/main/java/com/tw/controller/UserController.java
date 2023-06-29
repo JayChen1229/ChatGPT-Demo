@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
 
     private UserService userService;
@@ -18,46 +19,46 @@ public class UserController {
         this.userService = userService;
     }
 
-    // 獲得所有使用者資料
-    @GetMapping("/users")
-    public List<User> getUser(){
+    // Get all users
+    @GetMapping
+    public List<User> getAllUsers(){
         return userService.findAllUser();
     }
 
-    // 獲得所有使用者資料(用分數排序)
-    @GetMapping("/users/scoreRank")
-    public List<User> getUserByScore(){
+    // Get all users sorted by score
+    @GetMapping("/score")
+    public List<User> getUsersSortedByScore(){
         return userService.findAllUserOrderByMaxScore();
     }
-    // 獲得所有使用者資料(用等級排序)
-    @GetMapping("/users/levelRank")
-    public List<User> getUserByLevel(){
+    // Get all users sorted by level
+    @GetMapping("/level")
+    public List<User> getUsersSortedByLevel(){
         return userService.findAllUserOrderLevel();
     }
 
-    // 獲得單一使用者資料
-    @GetMapping("/users/userName")
-    public List<User> getUserByUserName(@RequestParam String userName){
+    // Get a single user by username
+    @GetMapping("/{userName}")
+    public List<User> getUserByUserName(@PathVariable String userName){
         return userService.findUserByUserName(userName);
     }
 
-    // 儲存使用者資料
-    @PutMapping("/users")
-    public boolean updateUser(@RequestBody User user){
+    // Save a user
+    @PutMapping
+    public boolean saveUser(@RequestBody User user) {
         userService.save(user);
         return true;
     }
 
-    // 修改使用者資料
-    @PutMapping("/users/{userId}")
+    // Update a user by ID
+    @PutMapping("/{userId}")
     public boolean updateUser(@PathVariable int userId, @RequestParam int money){
         User user = userService.findUserById(userId);
         user.setMoney(money);
         userService.save(user);
         return true;
     }
-    // 更新使用者最高分數
-    @PutMapping("/usersScore")
+    // Update a user's maximum score
+    @PutMapping("/score")
     public boolean updateUserMaxScore(@RequestBody User user){
         User theuser = userService.findUser(user);
         System.out.println(user.getMaxScore());
@@ -70,8 +71,8 @@ public class UserController {
         userService.save(theuser);
         return false;
     }
-    // 刪除使用者
-    @DeleteMapping("/users/{userId}")
+    // Delete a user by ID
+    @DeleteMapping("/{userId}")
     public boolean deleteUser(@PathVariable int userId){
         if(userService.findUserById(userId)!= null){
             userService.deleteUser(userId);

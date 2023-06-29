@@ -184,7 +184,7 @@ Starting from now until the end of July, the player with the highest level and t
     // 獲得分數排名
     function scoreRanking() {
         $.ajax({
-            url: "/users/scoreRank",
+            url: "/users/score",
             method: "GET",
             success: function (response) {
                 $("#content").val("");
@@ -209,7 +209,7 @@ Starting from now until the end of July, the player with the highest level and t
     // 獲得分數排名
     function levelRanking() {
         $.ajax({
-            url: "/users/levelRank",
+            url: "/users/level",
             method: "GET",
             success: function (response) {
                 $("#content").val("");
@@ -235,9 +235,8 @@ Starting from now until the end of July, the player with the highest level and t
     function searchUser() {
         let userName = $("#content").val();
         $.ajax({
-            url: "/users/userName",
+            url: `/users/${userName}`,
             method: "GET",
-            data: { userName: userName },
             success: function (response) {
                 $("#content").val("");  // 清空資料
                 $(".tbody").empty();

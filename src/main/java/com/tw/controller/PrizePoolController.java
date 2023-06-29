@@ -36,15 +36,6 @@ public class PrizePoolController {
         return 0.0; // 或者返回其他預設值，表示未找到獎池數據
     }
 
-//    // 更新獎池資料
-//    @PutMapping("/prizePools")
-//    public double updatePrizePool(@RequestParam int lumpSum){
-//        PrizePool prizePool = prizePoolRepository.findById(1).orElse(null);
-//        prizePool.setLumpSum(lumpSum);
-//        prizePoolRepository.save(prizePool);
-//        return lumpSum;
-//    }
-
     // 將獎池歸0
     @GetMapping("/prizePools/zero")
     public double updatePrizePoolToZero(){

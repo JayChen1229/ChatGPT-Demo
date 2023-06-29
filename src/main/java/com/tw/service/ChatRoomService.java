@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.SessionScope;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
 
@@ -14,6 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 @Service
+@SessionScope
 public class ChatRoomService {
 
     // 設定GPT API 基本參數

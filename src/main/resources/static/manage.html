@@ -256,9 +256,8 @@
     function searchUser() {
         let userName = $("#content").val();
         $.ajax({
-            url: "/users/userName",
+            url: `/users/${userName}`,
             method: "GET",
-            data: { userName: userName },
             success: function (response) {
                 $("#content").val("");  // 清空資料
                 $(".tbody").empty();

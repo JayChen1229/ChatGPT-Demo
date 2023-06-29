@@ -337,7 +337,7 @@ function saveScore() {
   sessionStorage.setItem("user", userString); // 將使用者資訊存入sessionStorage
 
   $.ajax({
-    url: "/usersScore",
+    url: "/users/score",
     method: "PUT",
     data: userString,
     contentType: "application/json",
