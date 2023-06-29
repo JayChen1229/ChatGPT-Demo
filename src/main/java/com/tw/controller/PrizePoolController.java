@@ -4,6 +4,8 @@ package com.tw.controller;
 import com.tw.model.PrizePool;
 import com.tw.model.User;
 import com.tw.repository.PrizePoolRepository;
+import com.tw.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -12,9 +14,11 @@ import java.util.Optional;
 public class PrizePoolController {
 
     private PrizePoolRepository prizePoolRepository;
+    private UserService userService;
 
-    public PrizePoolController(PrizePoolRepository prizePoolRepository) {
+    public PrizePoolController(PrizePoolRepository prizePoolRepository,UserService userService) {
         this.prizePoolRepository = prizePoolRepository;
+        this.userService = userService;
     }
 
     // 取得獎池資料
@@ -38,8 +42,11 @@ public class PrizePoolController {
 
     // 將獎池歸0
     @GetMapping("/prizePools/zero")
-    public double updatePrizePoolToZero(){
+    public double updatePrizePoolToZero(HttpSession session){
         PrizePool prizePool = prizePoolRepository.findById(1).orElse(null);
+        User user = (User) session.getAttribute("user");
+        user.setMoney((int) (user.getMoney()+prizePool.getLumpSum()));
+        userService.save(user);
         prizePool.setLumpSum(0);
         prizePoolRepository.save(prizePool);
         return prizePool.getLumpSum();

@@ -1,7 +1,10 @@
 package com.tw.controller;
 
 
+import com.tw.model.User;
 import com.tw.service.ChatRoomService;
+import com.tw.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -11,14 +14,19 @@ import reactor.core.publisher.Flux;
 public class ChatRoomController {
 
     private ChatRoomService chatRoomService;
+    private UserService userService;
 
     @Autowired
-    public ChatRoomController(ChatRoomService chatRoomService) {
+    public ChatRoomController(ChatRoomService chatRoomService,UserService userService) {
         this.chatRoomService = chatRoomService;
+        this.userService = userService;
     }
 
     @PostMapping("/content")
-    public Boolean login(@RequestParam String content){
+    public Boolean login(@RequestParam String content, HttpSession session){
+        User user = (User) session.getAttribute("user");
+        user.setLevel(user.getLevel()-2);
+        userService.save(user);
         chatRoomService.readResponse(content);
         System.out.println(content);
         return true;

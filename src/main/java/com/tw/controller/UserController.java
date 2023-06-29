@@ -3,6 +3,8 @@ package com.tw.controller;
 
 import com.tw.model.User;
 import com.tw.service.UserService;
+import com.tw.session.UserSession;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,13 +16,22 @@ public class UserController {
 
     private UserService userService;
 
+
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
+    // Get user
+    @GetMapping()
+    public User getUser(HttpSession session){
+        User user = (User)session.getAttribute("user");
+        return user;
+    }
+
+
     // Get all users
-    @GetMapping
+    @GetMapping("/all")
     public List<User> getAllUsers(){
         return userService.findAllUser();
     }
@@ -49,6 +60,33 @@ public class UserController {
         return true;
     }
 
+    @PutMapping("/money-50")
+    public boolean UserMoneyDown(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        user.setMoney(user.getMoney()-50);
+        userService.save(user);
+        return true;
+    }
+
+    @PutMapping("/levelUp")
+    public boolean UserLevelUp(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        int requiredExp = 100;
+        for (int i = 2; i <= user.getLevel(); i++) {
+            requiredExp += 10 * (i - 1);
+        }
+        user.setMoney(user.getMoney()-requiredExp);
+
+        if(user.getMoney() > 0){
+            user.setLevel(user.getLevel()+1);
+            userService.save(user);
+            return true;
+        }
+        return false;
+    }
+
+
+
     // Update a user by ID
     @PutMapping("/{userId}")
     public boolean updateUser(@PathVariable int userId, @RequestParam int money){
@@ -59,17 +97,28 @@ public class UserController {
     }
     // Update a user's maximum score
     @PutMapping("/score")
-    public boolean updateUserMaxScore(@RequestBody User user){
-        User theuser = userService.findUser(user);
-        System.out.println(user.getMaxScore());
-        if(theuser.getMaxScore() < user.getMaxScore()){
-            user.setPlayTimes(user.getPlayTimes()+1);
-            userService.save(user);
-            return true;
+    public boolean updateUserMaxScore(@RequestParam int score, HttpSession session){
+        User user = (User) session.getAttribute("user");
+        System.out.println(score);
+        if(user.getMaxScore() < score){
+            user.setMaxScore(score);
         }
-        theuser.setPlayTimes(user.getPlayTimes()+1);
-        userService.save(theuser);
-        return false;
+        int money = user.getMoney();
+        user.setMoney(money+score*20-50);
+        user.setPlayTimes(user.getPlayTimes()+1);
+        userService.save(user);
+        return true;
+
+//        User theuser = userService.findUser(user);
+//        System.out.println(user.getMaxScore());
+//        if(theuser.getMaxScore() < user.getMaxScore()){
+//            user.setPlayTimes(user.getPlayTimes()+1);
+//            userService.save(user);
+//            return true;
+//        }
+//        theuser.setPlayTimes(user.getPlayTimes()+1);
+//        userService.save(theuser);
+//        return false;
     }
     // Delete a user by ID
     @DeleteMapping("/{userId}")

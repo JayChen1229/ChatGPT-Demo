@@ -3,6 +3,7 @@ package com.tw.controller;
 
 import com.tw.model.User;
 import com.tw.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,12 +20,14 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public User login(@RequestBody User user){
+    public User login(@RequestBody User user, HttpSession session){
         User theUser = userService.findUser(user);
         if(theUser != null){
             // 登入次數
             theUser.setLoginTimes(theUser.getLoginTimes()+1);
             userService.save(theUser);
+            // 設置session
+            session.setAttribute("user",theUser);
             return theUser;
         }
         return null;

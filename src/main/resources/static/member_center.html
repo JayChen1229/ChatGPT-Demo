@@ -151,6 +151,23 @@
 <script src="./js/animated.js"></script>
 <script src="./js/common.js"></script>
 <script>
+    // 獲取 user 資料 確保隨時更新
+    function update() {
+        $.ajax({
+            type: "GET",
+            url: "/users",
+            success: function (response) {
+                let user = JSON.parse(sessionStorage.getItem("user"));
+                user.level = response.level;
+                user.money = response.money;
+                user.maxScore = response.maxScore;
+                let userString = JSON.stringify(user);
+                sessionStorage.setItem("user", userString);  // 將使用者資訊存入sessionStorage
+            }
+        });
+    }
+    update();
+
     //  防止圖片閃爍
     $(document).ready(function () {
         var backgroundImage = new Image();
@@ -280,14 +297,19 @@ ChatGPT 聊天室：您可以在這裡使用 ChatGPT。每次使用將使您的�
                     displayCharacters();
 
                     $.ajax({
-                        url: "/users",
+                        url: "/users/levelUp",
                         method: "PUT",
-                        data: JSON.stringify(user),
-                        contentType: "application/json",
                         success: function (response) {
                             if (response) {
                                 Swal.fire({
                                     title: `恭喜！升級到等級 ${user.level}！`,
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                    background: "rgba(255, 255, 255, .7)"
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: `請不要搞小動作！等級不會提升，並且會有罰款`,
                                     timer: 1500,
                                     showConfirmButton: false,
                                     background: "rgba(255, 255, 255, .7)"
@@ -300,7 +322,6 @@ ChatGPT 聊天室：您可以在這裡使用 ChatGPT。每次使用將使您的�
                                     background: "rgba(255, 255, 255, .7)"
                                 });
                             }
-
                         }
                     });
 

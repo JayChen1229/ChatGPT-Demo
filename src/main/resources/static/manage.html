@@ -164,7 +164,7 @@
         e.preventDefault();
         $("#output").hide();
         $.ajax({
-            url: "/users",
+            url: "/users/all",
             method: "GET",
             success: function (response) {
                 $("#content").val("");

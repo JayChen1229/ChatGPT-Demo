@@ -215,7 +215,7 @@ Note: The probability of winning is 5%.`;
         sessionStorage.setItem("user", userString);  // 將使用者資訊存入sessionStorage
         // 
         // 玩家錢減少
-        updateUser(userString);
+        updateUser();
         // 獎池增加
         updatePrizepool();
 
@@ -235,7 +235,7 @@ Note: The probability of winning is 5%.`;
                     // 更新狀態
                     let userString = JSON.stringify(user);
                     sessionStorage.setItem("user", userString);  // 將使用者資訊存入sessionStorage
-                    updateUser(userString);
+                    // updateUser(userString);
                     Swal.fire({
                         title: `恭喜中獎拉!!!!!!!
 獲得總獎金${response} !!!!!!`,
@@ -307,17 +307,18 @@ Note: The probability of winning is 5%.`;
             });
         }
 
-        function updateUser(userString) {
+        function updateUser() {
             $.ajax({
-                url: "/users",
+                url: "/users/money-50",
                 method: "PUT",
-                data: userString,
                 contentType: "application/json",
                 success: function (response) {
                     console.log(response);
                 }
             });
         }
+
+
     }
 </script>
 

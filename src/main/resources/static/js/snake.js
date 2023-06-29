@@ -5,6 +5,7 @@ let direct = "right"; /*蛇初始方向：向右*/
 let user = JSON.parse(sessionStorage.getItem("user"));
 let speed = 70 + user.level; /*蛇移动初始速度：35+等級*/ // 數字越低越快
 let score, timer, board, bean; /*游戏初始分数显示区，定时器，面板，豆*/
+let trueScore;
 // 如果等級大於10等，可使用技能
 let isShiftPressed = true;
 if (user.level >= 10) {
@@ -17,6 +18,8 @@ let slowDownAudio = document.getElementById("slowDown");
 
 // 初始化(){
 onload = () => {
+  // 真實數字，避免被竄改
+  trueScore = 0;
   //     初始化游戏面板和游戏分数显示区
   board = document.querySelector("#board");
   score = document.querySelector("#score");
@@ -271,6 +274,7 @@ function isEat() {
   if (snakeArray[0].offsetLeft === bean.offsetLeft) {
     if (snakeArray[0].offsetTop === bean.offsetTop) {
       //         分数++
+      trueScore++;
       score.innerText = parseInt(score.innerText) + 1;
       //         速度++
       clearInterval(timer);
@@ -328,10 +332,10 @@ function saveScore() {
   let user = JSON.parse(sessionStorage.getItem("user"));
   let thisScore = parseInt(score.innerText);
 
-  if (user.maxScore < thisScore) {
-    user.maxScore = thisScore;
+  if (user.maxScore < trueScore) {
+    user.maxScore = trueScore;
   }
-  user.money += thisScore * 20 - 50; // 增加money
+  user.money += trueScore * 20 - 50; // 增加money
   // 將 user 由物件 轉json
   let userString = JSON.stringify(user);
   sessionStorage.setItem("user", userString); // 將使用者資訊存入sessionStorage
@@ -339,8 +343,7 @@ function saveScore() {
   $.ajax({
     url: "/users/score",
     method: "PUT",
-    data: userString,
-    contentType: "application/json",
+    data: { score: trueScore },
     success: function (response) {
       console.log(response);
     },
